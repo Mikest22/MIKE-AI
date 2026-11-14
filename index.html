@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080d18">
+<title>MIKE AI</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#080d18;color:#edf5ff;
+ font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif;
+ min-height:100vh
+}
+header{
+ padding:22px 18px;border-bottom:1px solid #1b2a40;
+ display:flex;align-items:center;gap:12px
+}
+.logo{
+ width:43px;height:43px;border-radius:14px;
+ background:linear-gradient(135deg,#087bff,#36d9ff);
+ display:grid;place-items:center;font-weight:900;
+ font-size:19px;color:white
+}
+h1{font-size:21px;margin:0}
+small{color:#8da6c2}
+main{max-width:750px;margin:auto;padding:20px}
+.status{color:#40dca1;font-size:12px;margin:10px 0 20px}
+.welcome{text-align:center;padding:32px 8px}
+.brain{
+ width:100px;height:100px;border-radius:50%;
+ margin:auto auto 18px;
+ display:grid;place-items:center;font-size:44px;
+ background:radial-gradient(circle,#14538c,#101d37 70%);
+ box-shadow:0 0 40px #087bff35
+}
+h2{font-size:25px;margin:10px 0}
+.welcome p{color:#91a8c4;line-height:1.6}
+#messages{display:flex;flex-direction:column;gap:12px}
+.msg{
+ max-width:88%;padding:14px 16px;border-radius:17px;
+ line-height:1.5;font-size:14px;white-space:pre-wrap
+}
+.user{align-self:flex-end;background:#1257a5}
+.ai{align-self:flex-start;background:#152237;border:1px solid #263b56}
+.controls{
+ position:sticky;bottom:0;background:#080d18;
+ padding:12px 0 20px
+}
+.inputrow{display:flex;gap:8px}
+input{
+ min-width:0;flex:1;background:#111d30;
+ border:1px solid #29415f;border-radius:14px;
+ padding:15px;color:white;font-size:15px
+}
+button{
+ border:0;border-radius:13px;padding:13px 15px;
+ background:#087bff;color:white;font-weight:700
+}
+.tools{display:flex;gap:9px;margin-top:10px}
+.tools button{flex:1;background:#14253c}
+button:active{opacity:.7}
+footer{text-align:center;color:#607993;font-size:11px;padding:16px}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo">M</div>
+ <div>
+  <h1>MIKE AI</h1>
+  <small>Inteligencia artificial personal</small>
+ </div>
+</header>
+<main>
+ <div class="status">● SISTEMA INICIADO</div>
+ <section class="welcome" id="welcome">
+  <div class="brain">🧠</div>
+  <h2>Hola, soy MIKE AI</h2>
+  <p>Tu inteligencia artificial personal.<br>
+  Estoy preparada para iniciar nuestro desarrollo.</p>
+ </section>
+ <section id="messages"></section>
+ <div class="controls">
+  <div class="inputrow">
+   <input id="prompt" placeholder="Escribe un mensaje..."
+   autocomplete="off">
+   <button onclick="send()">Enviar</button>
+  </div>
+  <div class="tools">
+   <button onclick="listen()">🎙 Hablar</button>
+   <button onclick="toggleVoice()">🔊 Voz</button>
+  </div>
+ </div>
+</main>
+<footer>MIKE AI · PROTOTIPO 0.1 · MOTOR EN DESARROLLO</footer>
+<script>
+const messages=document.getElementById("messages");
+const input=document.getElementById("prompt");
+let voiceEnabled=true;
+let recognition=null;
+
+function addMessage(text,type){
+ const el=document.createElement("div");
+ el.className="msg "+type;
+ el.textContent=text;
+ messages.appendChild(el);
+ window.scrollTo(0,document.body.scrollHeight);
+}
+
+function send(){
+ const text=input.value.trim();
+ if(!text)return;
+ document.getElementById("welcome").style.display="none";
+ addMessage(text,"user");
+ input.value="";
+ addMessage(
+ "He recibido tu mensaje: "+text+
+ "\n\nEl motor neuronal propio todavía está en construcción. En la siguiente fase conectaremos mi cerebro y mi memoria.",
+ "ai"
+ );
+}
+
+input.addEventListener("keydown",e=>{
+ if(e.key==="Enter")send();
+});
+
+function toggleVoice(){
+ voiceEnabled=!voiceEnabled;
+ alert(voiceEnabled?"Voz activada":"Voz desactivada");
+}
+
+function listen(){
+ const SpeechRecognition=
+ window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SpeechRecognition){
+  alert("El navegador no admite reconocimiento de voz.");
+  return;
+ }
+ recognition=new SpeechRecognition();
+ recognition.lang="es-MX";
+ recognition.continuous=false;
+ recognition.interimResults=false;
+ recognition.onresult=e=>{
+  input.value=e.results[0][0].transcript;
+  send();
+ };
+ recognition.onerror=()=>alert("No se pudo reconocer la voz.");
+ recognition.start();
+}
+
+if("speechSynthesis" in window){
+ window.speechSynthesis.getVoices();
+}
+</script>
+</body>
+</html>
