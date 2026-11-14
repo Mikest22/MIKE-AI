@@ -105,6 +105,14 @@ function addMessage(text,type){
  el.className="msg "+type;
  el.textContent=text;
  messages.appendChild(el);
+
+ if(type==="ai" && voiceEnabled){
+  const utterance=new SpeechSynthesisUtterance(text);
+  utterance.lang="es-MX";
+  utterance.rate=1;
+  speechSynthesis.speak(utterance);
+ }
+
  window.scrollTo(0,document.body.scrollHeight);
 }
 
